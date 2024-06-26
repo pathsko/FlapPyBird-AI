@@ -52,17 +52,9 @@ To run this project on your local machine, follow these steps:
 
 3. **"Train" the AI:**
 
-    Use
-    ```bash
-    make train
-    ```
-    to start the training process. A black window will open; ignore it, as it is necessary for the training process.
+    Use `make train` to start the training process. A black window will open; ignore it, as it is necessary for the training process.
 
-    Alternatively, you can use
-    ```bash
-    make train-verbose
-    ```
-    which performs the same task, but in this case, the window will display each evaluation of each solution in each generation. Due to this, the training process will be slower than with the previous command.
+    Alternatively, you can use `make train-verbose` which performs the same task, but in this case, the window will display each evaluation of each solution in each generation. Due to this, the training process will be slower than with the previous command.
 
 > **Disclaimer:** As the generations advance, the evaluation of each solution becomes slower because each solution improves, survives longer, and achieves higher scores.
 After completing the training process, you will find the best solution of each generation in the "results" folder, and the best overall solution in "finalsol.txt".
@@ -71,7 +63,7 @@ After completing the training process, you will find the best solution of each g
 
 To start the game with the AI, simply run:
 ```bash
-make AI
+make ai
 ```
 This command reads the best parameters from "finalsol.txt". After this, press the space bar or any arrow key and enjoy watching how the AI masters the game.
 
