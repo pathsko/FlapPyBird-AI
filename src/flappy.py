@@ -48,7 +48,7 @@ class Flappy:
             mode = "ia"
         elif args[2] == "-train":
             mode = "train"
-            if len(args) > 2 and args[2] == "-verbose":
+            if len(args) > 3 and args[3] == "-verbose":
                 mode = "train-verbose"
 
         self.config.mode = mode
@@ -240,7 +240,7 @@ class Flappy:
 
             self.player.tick()
             self.player.distance_to_pipes(self.pipes)
-            if self.config.mode == "train-verbose":
+            if self.config.mode == 'train-verbose':
                 pygame.display.update()
 
             await asyncio.sleep(0)
