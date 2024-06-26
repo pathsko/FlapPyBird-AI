@@ -13,9 +13,9 @@ class Score(Entity):
     def reset(self) -> None:
         self.score = 0
 
-    def add(self,mute=None) -> None:
+    def add(self, mute=None) -> None:
         self.score += 1
-        if mute==None:
+        if mute == None:
             self.config.sounds.point.play()
 
     @property

@@ -1,16 +1,17 @@
+import ast
+import copy
+import math
+import random
 from enum import Enum
 from itertools import cycle
 
 import pygame
-import math
-import random
-import copy
-import ast
-from ..utils import GameConfig, clamp
+
+from ..utils import GameConfig, Perceptron, clamp
 from .entity import Entity
 from .floor import Floor
 from .pipe import Pipe, Pipes
-from ..utils import Perceptron
+
 
 class PlayerMode(Enum):
     SHM = "SHM"
@@ -32,7 +33,8 @@ class Player(Entity):
         self.crashed = False
         self.crash_entity = None
         self.set_mode(PlayerMode.SHM)
-        if  config.mode=='ia' :
+        if config.mode == "ia":
+
             def sigmoid(x):
                 if x >= 0:
                     z = math.exp(-x)
@@ -40,12 +42,14 @@ class Player(Entity):
                 else:
                     z = math.exp(x)
                     return z / (1 + z)
-            f = open('./results/finalsol.txt')
+
+            f = open("./results/finalsol.txt")
             weights = ast.literal_eval(f.read().strip())[0]
             f.close()
-            self.perceptron = Perceptron(sigmoid,weights)
+            self.perceptron = Perceptron(sigmoid, weights)
 
-        if  config.mode=='train' or self.config.mode=='train-verbose':
+        if config.mode == "train" or self.config.mode == "train-verbose":
+
             def sigmoid(x):
                 if x >= 0:
                     z = math.exp(-x)
@@ -53,43 +57,47 @@ class Player(Entity):
                 else:
                     z = math.exp(x)
                     return z / (1 + z)
-            
-            self.perceptron = Perceptron(sigmoid,[round(random.uniform(-1, 1),4) for _ in range(4)]+[0])
+
+            self.perceptron = Perceptron(
+                sigmoid,
+                [round(random.uniform(-1, 1), 4) for _ in range(4)] + [0],
+            )
+
     def __copy__(self):
         # Create a new instance
         new_player = Player(self.config)
-        
+
         # Copy all attributes
         new_player.min_y = self.min_y
         new_player.max_y = self.max_y
         new_player.img_idx = self.img_idx
-        new_player.img_gen = self.img_gen 
+        new_player.img_gen = self.img_gen
         new_player.frame = self.frame
         new_player.crashed = self.crashed
         new_player.crash_entity = self.crash_entity
         new_player.set_mode(PlayerMode.SHM)
         # Deep copy the perceptron if it exists
-        if hasattr(self, 'perceptron'):
+        if hasattr(self, "perceptron"):
             new_player.perceptron = copy.deepcopy(self.perceptron)
-        
+
         return new_player
 
-    def set_mode(self, mode: PlayerMode,mute=None) -> None:
+    def set_mode(self, mode: PlayerMode, mute=None) -> None:
         self.mode = mode
         if mode == PlayerMode.NORMAL:
             self.reset_vals_normal()
-            if mute==None:
+            if mute == None:
                 self.config.sounds.wing.play()
         elif mode == PlayerMode.SHM:
             self.reset_vals_shm()
         elif mode == PlayerMode.CRASH:
             self.stop_wings()
-            if mute==None:
+            if mute == None:
                 self.config.sounds.hit.play()
             if self.crash_entity == "pipe":
-                if mute==None:
+                if mute == None:
                     self.config.sounds.die.play()
-                
+
             self.reset_vals_crash()
 
     def reset_vals_normal(self) -> None:
@@ -145,7 +153,6 @@ class Player(Entity):
             self.vel_y += self.acc_y
         if self.flapped:
             self.flapped = False
-        
 
         self.y = clamp(self.y + self.vel_y, self.min_y, self.max_y)
         self.rotate()
@@ -183,12 +190,12 @@ class Player(Entity):
     def stop_wings(self) -> None:
         self.img_gen = cycle([self.img_idx])
 
-    def flap(self,mute=None) -> None:
+    def flap(self, mute=None) -> None:
         if self.y > self.min_y:
             self.vel_y = self.flap_acc
             self.flapped = True
             self.rot = 80
-            if mute==None:
+            if mute == None:
                 self.config.sounds.wing.play()
 
     def crossed(self, pipe: Pipe) -> bool:
@@ -214,42 +221,66 @@ class Player(Entity):
                 self.crash_entity = "pipe"
                 return True
         return False
-    
-    def distance_to_pipes(self,pipes,verbose=False):
+
+    def distance_to_pipes(self, pipes, verbose=False):
         top_pipe1 = pipes.upper[0]
-        p_upp1 = [top_pipe1.x,top_pipe1.y+top_pipe1.h]
+        p_upp1 = [top_pipe1.x, top_pipe1.y + top_pipe1.h]
         botton_pipe1 = pipes.lower[0]
-        p_bott1 = [botton_pipe1.x,botton_pipe1.y]
-        top_d1 = ((p_upp1[0]-self.cx)**2+(p_upp1[1]-self.cy)**2)**0.5
-        botton_d1 = ((p_bott1[0]-self.cx)**2+(p_bott1[1]-self.cy)**2)**0.5
+        p_bott1 = [botton_pipe1.x, botton_pipe1.y]
+        top_d1 = (
+            (p_upp1[0] - self.cx) ** 2 + (p_upp1[1] - self.cy) ** 2
+        ) ** 0.5
+        botton_d1 = (
+            (p_bott1[0] - self.cx) ** 2 + (p_bott1[1] - self.cy) ** 2
+        ) ** 0.5
         if verbose:
-            print(f'Distance to top pipes {top_d1}')
-            print(f'Distance to botton pipes {botton_d1}')
+            print(f"Distance to top pipes {top_d1}")
+            print(f"Distance to botton pipes {botton_d1}")
 
-        
-        pygame.draw.line(self.config.screen, (255, 0, 0), (self.cx,self.cy),(p_upp1[0],p_upp1[1]))
-        pygame.draw.line(self.config.screen, (255, 0, 0), (self.cx,self.cy),(p_bott1[0],p_bott1[1]))
-
+        pygame.draw.line(
+            self.config.screen,
+            (255, 0, 0),
+            (self.cx, self.cy),
+            (p_upp1[0], p_upp1[1]),
+        )
+        pygame.draw.line(
+            self.config.screen,
+            (255, 0, 0),
+            (self.cx, self.cy),
+            (p_bott1[0], p_bott1[1]),
+        )
 
         top_d2 = -1
         botton_d2 = -1
-        if len(pipes.upper)>1:
+        if len(pipes.upper) > 1:
             top_pipe2 = pipes.upper[1]
-            p_upp2 = [top_pipe2.x,top_pipe2.y+top_pipe2.h]
+            p_upp2 = [top_pipe2.x, top_pipe2.y + top_pipe2.h]
             botton_pipe2 = pipes.lower[1]
-            p_bott2 = [botton_pipe2.x,botton_pipe2.y]
-            top_d2 = ((p_upp2[0]-self.cx)**2+(p_upp2[1]-self.cy)**2)**0.5
-            botton_d2 = ((p_bott2[0]-self.cx)**2+(p_bott2[1]-self.cy)**2)**0.5
+            p_bott2 = [botton_pipe2.x, botton_pipe2.y]
+            top_d2 = (
+                (p_upp2[0] - self.cx) ** 2 + (p_upp2[1] - self.cy) ** 2
+            ) ** 0.5
+            botton_d2 = (
+                (p_bott2[0] - self.cx) ** 2 + (p_bott2[1] - self.cy) ** 2
+            ) ** 0.5
 
-            pygame.draw.line(self.config.screen, (255, 0, 0), (self.cx,self.cy),(p_upp2[0],p_upp2[1]))
-            pygame.draw.line(self.config.screen, (255, 0, 0), (self.cx,self.cy),(p_bott2[0],p_bott2[1]))
-        
-        return [top_d1,botton_d1,top_d2,botton_d2]
-        
-    def ia_action(self,pipes,mute=None):
+            pygame.draw.line(
+                self.config.screen,
+                (255, 0, 0),
+                (self.cx, self.cy),
+                (p_upp2[0], p_upp2[1]),
+            )
+            pygame.draw.line(
+                self.config.screen,
+                (255, 0, 0),
+                (self.cx, self.cy),
+                (p_bott2[0], p_bott2[1]),
+            )
+
+        return [top_d1, botton_d1, top_d2, botton_d2]
+
+    def ia_action(self, pipes, mute=None):
         ds = self.distance_to_pipes(pipes)
         p = self.perceptron.predict(ds)
-        if p>0.5:
+        if p > 0.5:
             self.flap(mute)
-        
-

@@ -54,11 +54,11 @@ To run this project on your local machine, follow these steps:
 
     Use
     ```bash
-        make train
+    make train
     ```
     to start the training process. A black window will open; ignore it, as it is necessary for the training process.
 
-    Alternatively, you can use 
+    Alternatively, you can use
     ```bash
     make train-verbose
     ```
@@ -82,4 +82,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Acknowledgements
 
 - The original [FlapPyBird](https://github.com/sourabhv/FlapPyBird) project by Sourabh Verma.
-

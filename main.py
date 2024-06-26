@@ -1,5 +1,6 @@
 import asyncio
 import sys
+
 from src.flappy import Flappy
 
 if __name__ == "__main__":
