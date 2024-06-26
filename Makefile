@@ -4,6 +4,12 @@ default:
 run:
 	python main.py
 
+ia:
+	python main.py -ia
+train-verbose:
+	python main.py -ia -train -verbose
+train:
+	python main.py -ia -train 
 web:
 	pygbag main.py
 

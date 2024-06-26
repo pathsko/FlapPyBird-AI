@@ -1,39 +1,85 @@
-[FlapPyBird](https://sourabhv.github.io/FlapPyBird)
-===============
+# FlapPyBird with AI
 
-A Flappy Bird Clone made using [python-pygame][pygame]
+This project is an enhanced version of the original [FlapPyBird](https://github.com/sourabhv/FlapPyBird) game, which now includes an AI that plays the game automatically.
 
-> If you are in interested in the old one-file code for the game, you can [find it here][one-file-game]
+## Original Project
 
-[pygame]: http://www.pygame.org
-[one-file-game]: https://github.com/sourabhv/FlapPyBird/blob/038359dc6122f8d851e816ddb3e7d28229d585e5/flappy.py
+This implementation is based on the [FlapPyBird](https://github.com/sourabhv/FlapPyBird) project created by Sourabh Verma. The original code is available [here](https://github.com/sourabhv/FlapPyBird) and is licensed under the MIT License.
 
+## AI Implementation
 
-Setup (as tested on MacOS)
----------------------------
+The AI in this project uses a simple perceptron whose parameters are optimized using a genetic algorithm. The genetic algorithm aims to maximize the score obtained by the perceptron, which takes the distance to the next and the second next pipes as input and outputs actions to control the bird
 
-1. Install Python 3 from [here](https://www.python.org/download/releases/) (or use brew/apt/pyenv)
+### Methodology
 
-2. Run `make init` (this will install pip packages, use virtualenv or something similar if you don't want to install globally)
+1. **Data Collection:** Data collection is not explicitly required for this project since the genetic algorithm evolves the perceptron parameters based on the performance during the game.
+2. **Training:** The training process involves the following steps:
+   - **InitAIlization:** A population of random perceptron parameters is generated.
+   - **Evaluation:** Each individual's performance is evaluated by running the game and recording the score.
+   - **Selection:** The best-performing individuals are selected to create the next generation.
+   - **Crossover:** Selected individuals are combined to produce offspring.
+   - **Mutation:** Random changes are introduced to some offspring to maintain genetic diversity.
+3. **Evaluation:** The AI's performance is evaluated based on the score achieved during gameplay. Higher scores indicate better performance.
 
-3. Run `make` to run the game. Run `DEBUG=True make` to see rects and coords
+### Solution Encoding
 
-4. Use <kbd>&uarr;</kbd> or <kbd>Space</kbd> key to play and <kbd>Esc</kbd> to close the game.
+The perceptron's parameters, which include weights and bAIses, are encoded as chromosomes in the genetic algorithm. Each chromosome is a vector of floating-point numbers representing these parameters.
 
-5. Optionally run `make web` to run the game in the browser (`pygbag`).
+### Fitness Function
 
-Notable forks
--------------
-- [FlapPyBlink Blink to control the bird](https://github.com/sero583/FlappyBlink)
-- [FlappyBird Fury Mode](https://github.com/Cc618/FlapPyBird)
-- [FlappyBird Model Predictive Control](https://github.com/philzook58/FlapPyBird-MPC)
-- [FlappyBird OpenFrameworks Port](https://github.com/TheLogicMaster/ofFlappyBird)
-- [FlappyBird On Quantum Computing](https://github.com/WingCode/QuFlapPyBird)
+The fitness function measures how well a given set of perceptron parameters performs in the game. It is defined as the score achieved by the bird using those parameters. Higher scores result in higher fitness values.
 
-Made something awesome from FlapPyBird? Add it to the list :)
+### Perceptron
 
+The perceptron used in this project is a simple neural network with a single layer. It takes the distances to the next and the second next pipes as inputs and outputs whether the bird should flap or not.
 
-Demo
-----------
+## Installation
 
-https://user-images.githubusercontent.com/2307626/130682424-9254b32d-efe0-406e-a6ea-3fb625a2df5e.mp4
+To run this project on your local machine, follow these steps:
+
+1. **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/pathsko/FlapPyBird-AI.git
+    cd FlapPyBird-AI
+    ```
+
+2. **Install the required dependencies:**
+
+    ```bash
+    make init
+    ```
+
+3. **"Train" the AI:**
+
+    Use
+    ```bash
+        make train
+    ```
+    to start the training process. A black window will open; ignore it, as it is necessary for the training process.
+
+    Alternatively, you can use 
+    ```bash
+    make train-verbose
+    ```
+    which performs the same task, but in this case, the window will display each evaluation of each solution in each generation. Due to this, the training process will be slower than with the previous command.
+
+> **Disclaimer:** As the generations advance, the evaluation of each solution becomes slower because each solution improves, survives longer, and achieves higher scores.
+After completing the training process, you will find the best solution of each generation in the "results" folder, and the best overall solution in "finalsol.txt".
+
+## Usage
+
+To start the game with the AI, simply run:
+```bash
+make AI
+```
+This command reads the best parameters from "finalsol.txt". After this, press the space bar or any arrow key and enjoy watching how the AI masters the game.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Acknowledgements
+
+- The original [FlapPyBird](https://github.com/sourabhv/FlapPyBird) project by Sourabh Verma.
+
