@@ -1,6 +1,6 @@
 # FlapPyBird with AI
 
-This project is an enhanced version of the original [FlapPyBird](https://github.com/sourabhv/FlapPyBird) game, which now includes an AI that plays the game automatically.
+This project is an enhanced version of the original [FlapPyBird](https://github.com/sourabhv/FlapPyBird) game, which now includes an AI that plays the game automatically. The main objective of this project is to apply the knowledge obtained about AI and metaheuristics to solve a problem, not to improve the initial version of the game. Obviously, adding an option where the game is played by an AI does not make it more fun; in fact, it makes it lose all its enjoyment.
 
 ## Original Project
 
